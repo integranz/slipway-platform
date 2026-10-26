@@ -1,0 +1,65 @@
+# Platform foundation for the organisation: everything the repositories' app layers and CI need, created once per
+# environment and rarely changed. Applied by a human (plan, read, apply that plan). The resource group, the state storage
+# and the CI/CD identity are created by setup-platform.sh; this layer looks them up.
+
+data "azurerm_client_config" "current" {}
+
+data "azurerm_resource_group" "env" {
+  name = local.resource_group_name
+}
+
+# CI/CD identity every repository's GitHub Actions logs in as (OIDC, flexible federated credentials; setup-platform.sh)
+data "azurerm_user_assigned_identity" "cicd" {
+  name                = local.cicd_identity_name
+  resource_group_name = data.azurerm_resource_group.env.name
+}
+
+resource "azurerm_log_analytics_workspace" "this" {
+  name                = local.log_analytics_name
+  location            = data.azurerm_resource_group.env.location
+  resource_group_name = data.azurerm_resource_group.env.name
+  sku                 = "PerGB2018"
+  retention_in_days   = 30
+  tags                = local.tags
+}
+
+resource "azurerm_container_registry" "this" {
+  name                = local.acr_name
+  location            = data.azurerm_resource_group.env.location
+  resource_group_name = data.azurerm_resource_group.env.name
+  sku                 = "Basic"
+  admin_enabled       = false # pulls use the apps' identities (AcrPull), pushes the CI/CD identity (AcrPush)
+  tags                = local.tags
+}
+
+resource "azurerm_key_vault" "this" {
+  name                       = local.key_vault_name
+  location                   = data.azurerm_resource_group.env.location
+  resource_group_name        = data.azurerm_resource_group.env.name
+  tenant_id                  = data.azurerm_client_config.current.tenant_id
+  sku_name                   = "standard"
+  rbac_authorization_enabled = true # data-plane access via RBAC roles (per app, per secret), no access policies
+  soft_delete_retention_days = 7
+  purge_protection_enabled   = false # enable for anything holding production secrets
+  tags                       = local.tags
+}
+
+# --- role assignments (non-privileged; the privileged, conditioned grants for per-app identities are made by an Owner,
+#     see setup-platform.sh --grant-per-app-roles) ---
+
+resource "azurerm_role_assignment" "cicd_acr_push" {
+  scope                = azurerm_container_registry.this.id
+  role_definition_name = "AcrPush"
+  principal_id         = data.azurerm_user_assigned_identity.cicd.principal_id
+  principal_type       = "ServicePrincipal"
+  description          = "CI of every repository pushes immutable image tags"
+}
+
+# The person applying this layer sets secret values out of band (az keyvault secret set).
+resource "azurerm_role_assignment" "applier_kv_secrets_officer" {
+  scope                = azurerm_key_vault.this.id
+  role_definition_name = "Key Vault Secrets Officer"
+  principal_id         = data.azurerm_client_config.current.object_id
+  principal_type       = "User"
+  description          = "Human who applies the platform manages secret values"
+}

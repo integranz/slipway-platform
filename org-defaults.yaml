@@ -1,0 +1,18 @@
+# Organisation template for the slipway onboarding poller (repository variable ONBOARD_ANSWERS_TEMPLATE on the plugin
+# repository). Rendered from platform.yaml by platform.cjs; `<name>` stands for the onboarded repository's name.
+# Install: gh variable set ONBOARD_ANSWERS_TEMPLATE -R integranz/slipway --body "$(grep -v '^#' org-defaults.yaml)"
+options.platform_scope: shared
+options.registry_scope: existing
+azure.location: westeurope
+azure.resource_group: rg-slipway-dev
+azure.acr_name: acrslipwaydev
+azure.acr_resource_group: rg-slipway-dev
+azure.key_vault_name: kv-slipway-dev
+azure.container_app_environment: cae-slipway-dev
+azure.state.resource_group: rg-slipway-tfstate
+azure.state.storage_account: stslipwaytf
+azure.state.container: tfstate
+github.cd_environment: dev
+jira.site_url: https://integranz.atlassian.net
+jira.project_key: DEVOPS
+options.tracker_transport: both

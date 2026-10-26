@@ -1,0 +1,14 @@
+output "resource_group_name" { value = data.azurerm_resource_group.env.name }
+output "location" { value = data.azurerm_resource_group.env.location }
+output "acr_name" { value = azurerm_container_registry.this.name }
+output "acr_login_server" { value = azurerm_container_registry.this.login_server }
+output "acr_id" { value = azurerm_container_registry.this.id }
+output "key_vault_name" { value = azurerm_key_vault.this.name }
+output "key_vault_id" { value = azurerm_key_vault.this.id }
+output "key_vault_uri" { value = azurerm_key_vault.this.vault_uri }
+output "container_app_environment_name" { value = azurerm_container_app_environment.this.name }
+output "container_app_environment_id" { value = azurerm_container_app_environment.this.id }
+output "container_app_environment_default_domain" { value = azurerm_container_app_environment.this.default_domain }
+output "log_analytics_workspace_id" { value = azurerm_log_analytics_workspace.this.id }
+output "cicd_identity_client_id" { value = data.azurerm_user_assigned_identity.cicd.client_id }
+output "cicd_identity_principal_id" { value = data.azurerm_user_assigned_identity.cicd.principal_id }
