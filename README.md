@@ -12,6 +12,7 @@ The one cloud foundation every repository of the organisation deploys through (`
 | Key vault (RBAC, per-app per-secret roles) | `kv-slipway-dev` | `infra/foundation` |
 | Container Apps environment | `cae-slipway-dev` | `infra/foundation` |
 | Log Analytics | `log-slipway-dev` | `infra/foundation` |
+| Shared apps identity (for repositories choosing `identity_scope: shared`) | `id-slipway-apps-dev` | `infra/foundation` |
 | Organisation secrets `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID` | — | `setup-platform.sh --set-github-secrets` |
 
 ## Setting it up (owner, once; every step is idempotent)

@@ -12,3 +12,5 @@ output "container_app_environment_default_domain" { value = azurerm_container_ap
 output "log_analytics_workspace_id" { value = azurerm_log_analytics_workspace.this.id }
 output "cicd_identity_client_id" { value = data.azurerm_user_assigned_identity.cicd.client_id }
 output "cicd_identity_principal_id" { value = data.azurerm_user_assigned_identity.cicd.principal_id }
+output "apps_identity_id" { value = azurerm_user_assigned_identity.apps.id }
+output "apps_identity_principal_id" { value = azurerm_user_assigned_identity.apps.principal_id }

@@ -21,7 +21,7 @@ azure:
   container_app_environment: cae-slipway-dev
   log_analytics_name: log-slipway-dev
   cicd_identity_name: id-slipway-cicd-dev  # user-assigned managed identity GitHub Actions logs in as (every repository)
-  shared_apps_identity: false              # true also creates id-slipway-apps-dev for repositories that choose identity_scope: shared
+  shared_apps_identity: true              # true also creates id-slipway-apps-dev for repositories that choose identity_scope: shared
   state:
     resource_group: rg-slipway-tfstate
     storage_account: stslipwaytf           # 3-24 lowercase letters and digits, globally unique

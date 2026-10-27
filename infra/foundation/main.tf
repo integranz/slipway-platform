@@ -63,3 +63,29 @@ resource "azurerm_role_assignment" "applier_kv_secrets_officer" {
   principal_type       = "User"
   description          = "Human who applies the platform manages secret values"
 }
+
+# Optional shared runtime identity for repositories that choose options.identity_scope: shared (one identity for all
+# their apps, reading every secret of the vault). Repositories with identity_scope: per-app (the default on the shared
+# platform) create their own identities in infra/apps/<app> and do not use this one.
+resource "azurerm_user_assigned_identity" "apps" {
+  name                = local.apps_identity_name
+  location            = data.azurerm_resource_group.env.location
+  resource_group_name = data.azurerm_resource_group.env.name
+  tags                = local.tags
+}
+
+resource "azurerm_role_assignment" "apps_acr_pull" {
+  scope                = azurerm_container_registry.this.id
+  role_definition_name = "AcrPull"
+  principal_id         = azurerm_user_assigned_identity.apps.principal_id
+  principal_type       = "ServicePrincipal"
+  description          = "Shared apps identity pulls images"
+}
+
+resource "azurerm_role_assignment" "apps_kv_secrets_user" {
+  scope                = azurerm_key_vault.this.id
+  role_definition_name = "Key Vault Secrets User"
+  principal_id         = azurerm_user_assigned_identity.apps.principal_id
+  principal_type       = "ServicePrincipal"
+  description          = "Shared apps identity reads secret values"
+}

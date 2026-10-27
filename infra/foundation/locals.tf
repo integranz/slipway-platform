@@ -10,6 +10,7 @@ locals {
   cae_name            = "cae-slipway-dev"
   log_analytics_name  = "log-slipway-dev"
   cicd_identity_name  = "id-slipway-cicd-dev" # created by setup-platform.sh (flexible federated credentials)
+  apps_identity_name  = "id-slipway-apps-dev"
 
   tags = {
     platform    = local.platform

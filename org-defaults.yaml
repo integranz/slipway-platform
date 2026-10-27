@@ -9,6 +9,8 @@ azure.acr_name: acrslipwaydev
 azure.acr_resource_group: rg-slipway-dev
 azure.key_vault_name: kv-slipway-dev
 azure.container_app_environment: cae-slipway-dev
+options.identity_scope: shared
+azure.identity_name: id-slipway-apps-dev
 azure.state.resource_group: rg-slipway-tfstate
 azure.state.storage_account: stslipwaytf
 azure.state.container: tfstate
